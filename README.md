@@ -2,7 +2,7 @@
 
 An [AngelScript](https://www.angelcode.com/angelscript/) grammar for
 [tree-sitter](https://tree-sitter.github.io/): syntax highlighting in
-editors, and structure for tools such as [Recall](https://github.com/MaxSensation/Recall),
+editors, and structure for tools,
 whose merges understand AngelScript declarations.
 
 It follows the [language reference](https://www.angelcode.com/angelscript/sdk/docs/manual/doc_script.html)

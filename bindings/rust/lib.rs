@@ -1,0 +1,65 @@
+//! This crate provides AngelScript language support for the [tree-sitter] parsing library.
+//!
+//! Typically, you will use the [`LANGUAGE`] constant to add this language to a
+//! tree-sitter [`Parser`], and then use the parser to parse some code:
+//!
+//! ```
+//! let code = r#"
+//! class Kart { void Steer(float amount) {} }
+//! "#;
+//! let mut parser = tree_sitter::Parser::new();
+//! let language = tree_sitter_angelscript::LANGUAGE;
+//! parser
+//!     .set_language(&language.into())
+//!     .expect("Error loading AngelScript parser");
+//! let tree = parser.parse(code, None).unwrap();
+//! assert!(!tree.root_node().has_error());
+//! ```
+//!
+//! [`Parser`]: https://docs.rs/tree-sitter/0.25.10/tree_sitter/struct.Parser.html
+//! [tree-sitter]: https://tree-sitter.github.io/
+
+use tree_sitter_language::LanguageFn;
+
+extern "C" {
+    fn tree_sitter_angelscript() -> *const ();
+}
+
+/// The tree-sitter [`LanguageFn`] for this grammar.
+pub const LANGUAGE: LanguageFn = unsafe { LanguageFn::from_raw(tree_sitter_angelscript) };
+
+/// The content of the [`node-types.json`] file for this grammar.
+///
+/// [`node-types.json`]: https://tree-sitter.github.io/tree-sitter/using-parsers/6-static-node-types
+pub const NODE_TYPES: &str = include_str!("../../src/node-types.json");
+
+/// Syntax highlighting for editors (`queries/highlights.scm`).
+
+pub const HIGHLIGHTS_QUERY: &str = include_str!("../../queries/highlights.scm");
+// pub const INJECTIONS_QUERY: &str = include_str!("../../queries/injections.scm");
+// pub const LOCALS_QUERY: &str = include_str!("../../queries/locals.scm");
+// pub const TAGS_QUERY: &str = include_str!("../../queries/tags.scm");
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_can_load_grammar() {
+        let mut parser = tree_sitter::Parser::new();
+        parser
+            .set_language(&super::LANGUAGE.into())
+            .expect("Error loading AngelScript parser");
+    }
+
+    #[test]
+    fn the_example_parses_cleanly() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&super::LANGUAGE.into()).unwrap();
+        let tree = parser.parse(include_str!("../../examples/kart.as"), None).unwrap();
+        assert!(!tree.root_node().has_error(), "{}", tree.root_node().to_sexp());
+    }
+
+    #[test]
+    fn the_highlights_query_compiles() {
+        tree_sitter::Query::new(&super::LANGUAGE.into(), super::HIGHLIGHTS_QUERY).expect("valid highlights query");
+    }
+}

@@ -1,0 +1,362 @@
+======================================================================
+Namespace with nested name
+======================================================================
+
+namespace Game::Karts {
+  int laps;
+}
+
+----------------------------------------------------------------------
+
+(script
+  (namespace_declaration
+    (identifier)
+    (identifier)
+    (declaration_list
+      (variable_declaration
+        (type
+          (primitive_type))
+        (variable_declarator
+          (identifier))))))
+
+======================================================================
+Class with bases, members, constructor and destructor
+======================================================================
+
+shared class Kart : IDriveable, Game::Entity
+{
+    private float m_speed = 0.0f;
+    array<Wheel@> wheels(4);
+    Kart(const string &in name) { super(name); }
+    ~Kart() {}
+    void Steer(float amount) override {}
+    float get_speed() const property { return m_speed; }
+}
+
+----------------------------------------------------------------------
+
+(script
+  (class_declaration
+    (modifiers)
+    (identifier)
+    (base_list
+      (identifier)
+      (qualified_name
+        (identifier)
+        (identifier)))
+    (class_body
+      (variable_declaration
+        (modifiers)
+        (type
+          (primitive_type))
+        (variable_declarator
+          (identifier)
+          (number)))
+      (variable_declaration
+        (type
+          (identifier)
+          (template_argument_list
+            (type
+              (identifier)
+              (handle_suffix))))
+        (variable_declarator
+          (identifier)
+          (argument_list
+            (argument
+              (number)))))
+      (constructor_declaration
+        (identifier)
+        (parameter_list
+          (parameter
+            (type
+              (identifier))
+            (type_modifier)
+            (identifier)))
+        (block
+          (expression_statement
+            (call_expression
+              (super)
+              (argument_list
+                (argument
+                  (identifier)))))))
+      (destructor_declaration
+        (identifier)
+        (block))
+      (function_declaration
+        (type
+          (primitive_type))
+        (identifier)
+        (parameter_list
+          (parameter
+            (type
+              (primitive_type))
+            (identifier)))
+        (function_attribute)
+        (block))
+      (function_declaration
+        (type
+          (primitive_type))
+        (identifier)
+        (parameter_list)
+        (function_attribute)
+        (block
+          (return_statement
+            (identifier)))))))
+
+======================================================================
+Forward-declared external class and mixin
+======================================================================
+
+external shared class Entity;
+mixin class Boostable { void Boost() {} }
+
+----------------------------------------------------------------------
+
+(script
+  (class_declaration
+    (modifiers)
+    (identifier))
+  (class_declaration
+    (modifiers)
+    (identifier)
+    (class_body
+      (function_declaration
+        (type
+          (primitive_type))
+        (identifier)
+        (parameter_list)
+        (block)))))
+
+======================================================================
+Interface
+======================================================================
+
+interface IDriveable : IThing
+{
+    void Steer(float amount);
+    float Speed { get const; }
+}
+
+----------------------------------------------------------------------
+
+(script
+  (interface_declaration
+    (identifier)
+    (base_list
+      (identifier))
+    (interface_body
+      (function_declaration
+        (type
+          (primitive_type))
+        (identifier)
+        (parameter_list
+          (parameter
+            (type
+              (primitive_type))
+            (identifier))))
+      (virtual_property_declaration
+        (type
+          (primitive_type))
+        (identifier)
+        (accessor_list
+          (accessor))))))
+
+======================================================================
+Enum with values and trailing comma
+======================================================================
+
+enum Surface : uint8 { Road, Grass = 2, Ice, }
+
+----------------------------------------------------------------------
+
+(script
+  (enum_declaration
+    (identifier)
+    (primitive_type)
+    (enumerator_list
+      (enumerator
+        (identifier))
+      (enumerator
+        (identifier)
+        (number))
+      (enumerator
+        (identifier)))))
+
+======================================================================
+Funcdef, typedef and import
+======================================================================
+
+funcdef void OnLap(int lap, float time);
+typedef float real;
+import void PlaySound(const string &in) from "audio";
+
+----------------------------------------------------------------------
+
+(script
+  (funcdef_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list
+      (parameter
+        (type
+          (primitive_type))
+        (identifier))
+      (parameter
+        (type
+          (primitive_type))
+        (identifier))))
+  (typedef_declaration
+    (primitive_type)
+    (identifier))
+  (import_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list
+      (parameter
+        (type
+          (identifier))
+        (type_modifier)))
+    (string
+      (string_content))))
+
+======================================================================
+Virtual property with accessors
+======================================================================
+
+class A {
+    int Value
+    {
+        get const { return v; }
+        set { v = value; }
+    }
+}
+
+----------------------------------------------------------------------
+
+(script
+  (class_declaration
+    (identifier)
+    (class_body
+      (virtual_property_declaration
+        (type
+          (primitive_type))
+        (identifier)
+        (accessor_list
+          (accessor
+            (block
+              (return_statement
+                (identifier))))
+          (accessor
+            (block
+              (expression_statement
+                (assignment_expression
+                  (identifier)
+                  (identifier))))))))))
+
+======================================================================
+Global variables, several declarators
+======================================================================
+
+const int MAX = 3, MIN = 1;
+float g_time;
+int[] scores;
+dictionary@ d = dictionary();
+
+----------------------------------------------------------------------
+
+(script
+  (variable_declaration
+    (type
+      (primitive_type))
+    (variable_declarator
+      (identifier)
+      (number))
+    (variable_declarator
+      (identifier)
+      (number)))
+  (variable_declaration
+    (type
+      (primitive_type))
+    (variable_declarator
+      (identifier)))
+  (variable_declaration
+    (type
+      (primitive_type)
+      (array_suffix)
+      (array_suffix))
+    (variable_declarator
+      (identifier)))
+  (variable_declaration
+    (type
+      (identifier)
+      (handle_suffix))
+    (variable_declarator
+      (identifier)
+      (call_expression
+        (identifier)
+        (argument_list)))))
+
+======================================================================
+Metadata before declarations
+======================================================================
+
+[editable]
+class Kart
+{
+    [range(0, 100)]
+    float speed;
+}
+
+----------------------------------------------------------------------
+
+(script
+  (metadata)
+  (class_declaration
+    (identifier)
+    (class_body
+      (metadata)
+      (variable_declaration
+        (type
+          (primitive_type))
+        (variable_declarator
+          (identifier))))))
+
+======================================================================
+Parameters with modifiers and defaults
+======================================================================
+
+void f(int &out result, const array<int>@ items, float scale = 1.0f, ?&in any) {}
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list
+      (parameter
+        (type
+          (primitive_type))
+        (type_modifier)
+        (identifier))
+      (parameter
+        (type
+          (identifier)
+          (template_argument_list
+            (type
+              (primitive_type)))
+          (handle_suffix))
+        (identifier))
+      (parameter
+        (type
+          (primitive_type))
+        (identifier)
+        (number))
+      (parameter
+        (type)
+        (type_modifier)
+        (identifier)))
+    (block)))

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "angelscript",
+      "camelcase": "AngelScript",
+      "title": "AngelScript",
+      "scope": "source.angelscript",
+      "file-types": ["as", "angelscript"],
+      "injection-regex": "^(as|angelscript)$",
+      "class-name": "TreeSitterAngelScript"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "Apache-2.0",
+    "description": "AngelScript grammar for tree-sitter",
+    "authors": [{ "name": "MaxSensation" }],
+    "links": { "repository": "https://github.com/MaxSensation/tree-sitter-anglescript" }
+  },
+  "bindings": { "c": true, "go": false, "node": true, "python": false, "rust": true, "swift": false, "zig": false }
+}

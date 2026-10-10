@@ -1,0 +1,241 @@
+======================================================================
+Operators and precedence
+======================================================================
+
+void f() { x = a + b * c ** d ** e >> 2 & mask | flag; }
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (binary_expression
+            (binary_expression
+              (binary_expression
+                (binary_expression
+                  (identifier)
+                  (binary_expression
+                    (identifier)
+                    (binary_expression
+                      (identifier)
+                      (binary_expression
+                        (identifier)
+                        (identifier)))))
+                (number))
+              (identifier))
+            (identifier)))))))
+
+======================================================================
+Logic words, handles and comparisons
+======================================================================
+
+void f() { ok = a and not b or c xor d; same = h is null || h !is other; }
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (binary_expression
+            (binary_expression
+              (identifier)
+              (unary_expression
+                (identifier)))
+            (binary_expression
+              (identifier)
+              (identifier)))))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (binary_expression
+            (binary_expression
+              (identifier)
+              (null))
+            (binary_expression
+              (identifier)
+              (identifier))))))))
+
+======================================================================
+Calls, members, indexing, named arguments
+======================================================================
+
+void f() { obj.items[i, j].update(dt, force: true).done = ::print(Game::name); }
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (assignment_expression
+          (member_expression
+            (call_expression
+              (member_expression
+                (index_expression
+                  (member_expression
+                    (identifier)
+                    (identifier))
+                  (argument
+                    (identifier))
+                  (argument
+                    (identifier)))
+                (identifier))
+              (argument_list
+                (argument
+                  (identifier))
+                (argument
+                  (identifier)
+                  (boolean))))
+            (identifier))
+          (call_expression
+            (qualified_name
+              (identifier))
+            (argument_list
+              (argument
+                (qualified_name
+                  (identifier)
+                  (identifier))))))))))
+
+======================================================================
+Lambdas and ternaries
+======================================================================
+
+void f() { sort(function(a, b) { return a < b; }); v = c ? 1 : x > 2 ? 3 : 4; }
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list
+            (argument
+              (lambda_expression
+                (lambda_parameter
+                  (identifier))
+                (lambda_parameter
+                  (identifier))
+                (block
+                  (return_statement
+                    (binary_expression
+                      (identifier)
+                      (identifier)))))))))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (ternary_expression
+            (identifier)
+            (number)
+            (ternary_expression
+              (binary_expression
+                (identifier)
+                (number))
+              (number)
+              (number))))))))
+
+======================================================================
+Literals
+======================================================================
+
+void f() { s = "text\n" + 'c' + """raw
+"text""" ; n = 0xFF + 0b101 + 1.5e3f + 2.0 + .5 + 1_000; b = true; p = null; }
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (binary_expression
+            (binary_expression
+              (string
+                (string_content)
+                (escape_sequence))
+              (string
+                (string_content)))
+            (string
+              (string_content)))))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (binary_expression
+            (binary_expression
+              (binary_expression
+                (binary_expression
+                  (binary_expression
+                    (number)
+                    (number))
+                  (number))
+                (number))
+              (number))
+            (number))))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (boolean)))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (null))))))
+
+======================================================================
+Bitwise binds tighter than comparison, xor sits with equality
+======================================================================
+
+void f() { ok = a & b == c; t = x xor y and z; }
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (binary_expression
+            (binary_expression
+              (identifier)
+              (identifier))
+            (identifier))))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (binary_expression
+            (binary_expression
+              (identifier)
+              (identifier))
+            (identifier)))))))

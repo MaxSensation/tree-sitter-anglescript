@@ -1,0 +1,26 @@
+======================================================================
+Include, directives and comments
+======================================================================
+
+#include "common.as"
+#if DEBUG
+// line comment
+/* block
+   comment */
+void f() {}
+#endif
+
+----------------------------------------------------------------------
+
+(script
+  (preproc_directive)
+  (preproc_directive)
+  (comment)
+  (comment)
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block))
+  (preproc_directive))

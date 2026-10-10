@@ -1,0 +1,194 @@
+======================================================================
+Control flow
+======================================================================
+
+void f()
+{
+    if (a) b(); else if (c) d(); else { e(); }
+    for (uint i = 0; i < n; i++, j--) {}
+    while (running) tick();
+    do { x--; } while (x > 0);
+    foreach (auto w, auto i : wheels) { w.spin(); }
+    switch (s) { case Surface::Ice: slow(); break; default: break; }
+    try { risky(); } catch { recover(); }
+    return;
+}
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (if_statement
+        (identifier)
+        (expression_statement
+          (call_expression
+            (identifier)
+            (argument_list)))
+        (if_statement
+          (identifier)
+          (expression_statement
+            (call_expression
+              (identifier)
+              (argument_list)))
+          (block
+            (expression_statement
+              (call_expression
+                (identifier)
+                (argument_list))))))
+      (for_statement
+        (local_variable_declaration
+          (type
+            (primitive_type))
+          (variable_declarator
+            (identifier)
+            (number)))
+        (binary_expression
+          (identifier)
+          (identifier))
+        (update_expression
+          (identifier))
+        (update_expression
+          (identifier))
+        (block))
+      (while_statement
+        (identifier)
+        (expression_statement
+          (call_expression
+            (identifier)
+            (argument_list))))
+      (do_statement
+        (block
+          (expression_statement
+            (update_expression
+              (identifier))))
+        (binary_expression
+          (identifier)
+          (number)))
+      (foreach_statement
+        (type)
+        (identifier)
+        (type)
+        (identifier)
+        (identifier)
+        (block
+          (expression_statement
+            (call_expression
+              (member_expression
+                (identifier)
+                (identifier))
+              (argument_list)))))
+      (switch_statement
+        (identifier)
+        (switch_case
+          (qualified_name
+            (identifier)
+            (identifier))
+          (expression_statement
+            (call_expression
+              (identifier)
+              (argument_list)))
+          (break_statement))
+        (switch_case
+          (break_statement)))
+      (try_statement
+        (block
+          (expression_statement
+            (call_expression
+              (identifier)
+              (argument_list))))
+        (block
+          (expression_statement
+            (call_expression
+              (identifier)
+              (argument_list)))))
+      (return_statement))))
+
+======================================================================
+Declarations or expressions
+======================================================================
+
+void f()
+{
+    Kart@ k = cast<Kart>(other);
+    a < b;
+    array<int> v(3);
+    x = array<int>(3);
+    Foo f();
+    @h = obj;
+    array<int> list = {1, 2, {3}};
+}
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (local_variable_declaration
+        (type
+          (identifier)
+          (handle_suffix))
+        (variable_declarator
+          (identifier)
+          (cast_expression
+            (type
+              (identifier))
+            (identifier))))
+      (expression_statement
+        (binary_expression
+          (identifier)
+          (identifier)))
+      (local_variable_declaration
+        (type
+          (identifier)
+          (template_argument_list
+            (type
+              (primitive_type))))
+        (variable_declarator
+          (identifier)
+          (argument_list
+            (argument
+              (number)))))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (construct_expression
+            (identifier)
+            (template_argument_list
+              (type
+                (primitive_type)))
+            (argument_list
+              (argument
+                (number))))))
+      (local_variable_declaration
+        (type
+          (identifier))
+        (variable_declarator
+          (identifier)
+          (argument_list)))
+      (expression_statement
+        (assignment_expression
+          (unary_expression
+            (identifier))
+          (identifier)))
+      (local_variable_declaration
+        (type
+          (identifier)
+          (template_argument_list
+            (type
+              (primitive_type))))
+        (variable_declarator
+          (identifier)
+          (initializer_list
+            (number)
+            (number)
+            (initializer_list
+              (number))))))))

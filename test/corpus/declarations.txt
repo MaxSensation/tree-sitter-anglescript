@@ -10,8 +10,9 @@ namespace Game::Karts {
 
 (script
   (namespace_declaration
-    (identifier)
-    (identifier)
+    (qualified_name
+      (identifier)
+      (identifier))
     (declaration_list
       (variable_declaration
         (type

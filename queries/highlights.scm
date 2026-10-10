@@ -22,6 +22,7 @@
 (funcdef_declaration name: (identifier) @type)
 (typedef_declaration name: (identifier) @type)
 (namespace_declaration name: (identifier) @module)
+(namespace_declaration name: (qualified_name name: (identifier) @module))
 (qualified_name scope: (identifier) @module)
 (enumerator name: (identifier) @constant)
 

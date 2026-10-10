@@ -173,7 +173,7 @@ module.exports = grammar({
 
     namespace_declaration: $ => seq(
       'namespace',
-      field('name', sep1($.identifier, '::')),
+      field('name', choice($.identifier, $.qualified_name)),
       field('body', $.declaration_list),
     ),
 

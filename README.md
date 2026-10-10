@@ -18,9 +18,10 @@ and what the standard add-ons and game engines add:
 * every statement, including `foreach` (2.37) and `try`/`catch`;
 * expressions with AngelScript's operator precedence (the bitwise operators
   bind tighter than comparisons; `xor`/`^^` sits with `==`), handle
-  comparison (`is`, `!is`), casts, lambdas, named arguments and
-  initializer lists;
-* `#include` and other preprocessor lines, and metadata such as `[editable]`
+  comparison (`is`, `!is`), casts, lambdas, named arguments, initializer
+  lists (also as arguments, and typed: `dictionary = {{'k', v}}`), and
+  contextual keywords used as names (`function()`, `from`);
+* `#include` and other preprocessor lines, a `#!` first line, and metadata such as `[editable]`
   before declarations.
 
 ## Use
@@ -50,6 +51,11 @@ cargo test             # the Rust binding, the example and the query
 ```
 
 `examples/kart.as` is a larger script that must parse without errors.
+The grammar is also checked against real code: the AngelScript SDK's
+samples, Rigs of Rods' scripts and Openplanet's example plugins (80 files,
+about 17,000 lines) all parse without errors. Operator precedence follows
+the manual's table and the compiler: every binary operator, `**` included,
+groups left to right.
 
 ## Licence
 

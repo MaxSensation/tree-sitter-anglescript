@@ -10,8 +10,9 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-// AngelScript's order (lowest first), which differs from C's: the bitwise
-// operators bind tighter than comparisons, and `xor`/`^^` sits with `==`.
+// AngelScript's order (lowest first), as in the manual's operator precedence
+// page, which differs from C's: the bitwise operators bind tighter than
+// comparisons, and `xor`/`^^` sits with `==`.
 const PREC = {
   assign: 1,
   ternary: 2,
@@ -62,14 +63,18 @@ module.exports = grammar({
     // `Foo` at the start of a statement: a type or an expression.
     [$._type_name, $._expression],
     // `a < b` or `array<int>(3)`.
-    [$.construct_expression, $._expression],
     [$.construct_expression, $._type_name, $._expression],
     // `Foo f();`: a function prototype or a variable built with no arguments.
     [$.parameter_list, $.argument_list],
+    // `function()`: a call to something named `function`, or a lambda.
+    [$._contextual_name, $.lambda_expression],
   ],
 
   rules: {
-    script: $ => repeat($._top_level),
+    script: $ => seq(optional($.shebang), repeat($._top_level)),
+
+    /// `#!asrun` on the first line (the SDK's script runner).
+    shebang: _ => token(prec(1, seq('#!', /[^\n]*/))),
 
     _top_level: $ => choice($._declaration, $.preproc_include, $.preproc_directive, ';'),
 
@@ -416,6 +421,9 @@ module.exports = grammar({
 
     _expression: $ => choice(
       $.identifier,
+      // Contextual keywords are ordinary names elsewhere: `function();`,
+      // `int from = 0; return from;`.
+      $._contextual_name,
       $.qualified_name,
       $.number,
       $.string,
@@ -434,6 +442,7 @@ module.exports = grammar({
       $.index_expression,
       $.cast_expression,
       $.construct_expression,
+      $.typed_initializer,
       $.lambda_expression,
       $.primitive_type,
     ),
@@ -464,16 +473,16 @@ module.exports = grammar({
         [PREC.shift, choice('<<', '>>', '>>>')],
         [PREC.add, choice('+', '-')],
         [PREC.mul, choice('*', '/', '%')],
+        // Left to right like the rest: the compiler groups `a ** b ** c` as
+        // `(a ** b) ** c` (asCCompiler::ConvertToPostFix).
+        [PREC.pow, '**'],
       ];
-      return choice(
-        ...table.map(([p, op]) => prec.left(/** @type {number} */ (p), seq(
-          field('left', $._expression),
-          // @ts-ignore
-          field('operator', op),
-          field('right', $._expression),
-        ))),
-        prec.right(PREC.pow, seq(field('left', $._expression), field('operator', '**'), field('right', $._expression))),
-      );
+      return choice(...table.map(([p, op]) => prec.left(/** @type {number} */ (p), seq(
+        field('left', $._expression),
+        // @ts-ignore
+        field('operator', op),
+        field('right', $._expression),
+      ))));
     },
 
     unary_expression: $ => prec(PREC.unary, seq(
@@ -490,7 +499,11 @@ module.exports = grammar({
 
     argument_list: $ => seq('(', commaSep($.argument), ')'),
 
-    argument: $ => seq(optional(seq(field('name', $.identifier), ':')), field('value', $._expression)),
+    // An argument can be an anonymous initializer list: `f({ {'id', 1} })`.
+    argument: $ => seq(
+      optional(seq(field('name', $.identifier), ':')),
+      field('value', choice($._expression, $.initializer_list)),
+    ),
 
     member_expression: $ => prec(PREC.call, seq(field('object', $._expression), '.', field('member', $.identifier))),
 
@@ -507,6 +520,16 @@ module.exports = grammar({
       field('template', $.template_argument_list),
       field('arguments', $.argument_list),
     ),
+
+    _contextual_name: $ => alias(choice('function', 'get', 'set', 'from'), $.identifier),
+
+    /// `array<int> = {1, 2}` or `dictionary = {{'k', v}}`: an initializer
+    /// list with its type, used as a value.
+    typed_initializer: $ => prec.dynamic(-1, seq(
+      field('type', $.type),
+      '=',
+      field('value', $.initializer_list),
+    )),
 
     lambda_expression: $ => seq(
       'function',

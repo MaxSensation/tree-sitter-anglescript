@@ -24,3 +24,21 @@ void f() {}
     (parameter_list)
     (block))
   (preproc_directive))
+
+======================================================================
+Shebang line
+======================================================================
+
+#!asrun
+void main() {}
+
+----------------------------------------------------------------------
+
+(script
+  (shebang)
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block)))

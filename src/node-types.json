@@ -130,6 +130,10 @@
         "named": true
       },
       {
+        "type": "typed_initializer",
+        "named": true
+      },
+      {
         "type": "unary_expression",
         "named": true
       },
@@ -262,6 +266,10 @@
         "types": [
           {
             "type": "_expression",
+            "named": true
+          },
+          {
+            "type": "initializer_list",
             "named": true
           }
         ]
@@ -1695,6 +1703,10 @@
         {
           "type": "preproc_include",
           "named": true
+        },
+        {
+          "type": "shebang",
+          "named": true
         }
       ]
     }
@@ -1886,6 +1898,32 @@
     "type": "type_modifier",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "typed_initializer",
+    "named": true,
+    "fields": {
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "initializer_list",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "typedef_declaration",
@@ -2571,6 +2609,10 @@
   {
     "type": "shared",
     "named": false
+  },
+  {
+    "type": "shebang",
+    "named": true
   },
   {
     "type": "string_content",

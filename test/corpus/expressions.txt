@@ -24,10 +24,10 @@ void f() { x = a + b * c ** d ** e >> 2 & mask | flag; }
                   (binary_expression
                     (identifier)
                     (binary_expression
-                      (identifier)
                       (binary_expression
                         (identifier)
-                        (identifier)))))
+                        (identifier))
+                      (identifier))))
                 (number))
               (identifier))
             (identifier)))))))
@@ -239,3 +239,167 @@ void f() { ok = a & b == c; t = x xor y and z; }
               (identifier)
               (identifier))
             (identifier)))))))
+
+======================================================================
+Exponent groups left to right, like the compiler
+======================================================================
+
+void f() { x = a ** b ** c; }
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (binary_expression
+            (binary_expression
+              (identifier)
+              (identifier))
+            (identifier)))))))
+
+======================================================================
+Initializer lists as arguments and typed initializer lists
+======================================================================
+
+void f()
+{
+    game.pushMessage(MSG_LOAD, { {'filename', 'a.as'}, {'id', 3} });
+    clear({});
+    createCoRoutine(fill, dictionary = {{'my array', @links}});
+    add(array<vector3> = {vector3(1, 1, 1)});
+    array<int> list = {1, 2, {3}};
+}
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (call_expression
+          (member_expression
+            (identifier)
+            (identifier))
+          (argument_list
+            (argument
+              (identifier))
+            (argument
+              (initializer_list
+                (initializer_list
+                  (string
+                    (string_content))
+                  (string
+                    (string_content)))
+                (initializer_list
+                  (string
+                    (string_content))
+                  (number)))))))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list
+            (argument
+              (initializer_list)))))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list
+            (argument
+              (identifier))
+            (argument
+              (typed_initializer
+                (type
+                  (identifier))
+                (initializer_list
+                  (initializer_list
+                    (string
+                      (string_content))
+                    (unary_expression
+                      (identifier)))))))))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list
+            (argument
+              (typed_initializer
+                (type
+                  (identifier)
+                  (template_argument_list
+                    (type
+                      (identifier))))
+                (initializer_list
+                  (call_expression
+                    (identifier)
+                    (argument_list
+                      (argument
+                        (number))
+                      (argument
+                        (number))
+                      (argument
+                        (number))))))))))
+      (local_variable_declaration
+        (type
+          (identifier)
+          (template_argument_list
+            (type
+              (primitive_type))))
+        (variable_declarator
+          (identifier)
+          (initializer_list
+            (number)
+            (number)
+            (initializer_list
+              (number))))))))
+
+======================================================================
+Contextual keywords as names
+======================================================================
+
+void f() { function(); int from = 0; get(from); auto l = function(a) { return a; }; }
+
+----------------------------------------------------------------------
+
+(script
+  (function_declaration
+    (type
+      (primitive_type))
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list)))
+      (local_variable_declaration
+        (type
+          (primitive_type))
+        (variable_declarator
+          (identifier)
+          (number)))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list
+            (argument
+              (identifier)))))
+      (local_variable_declaration
+        (type)
+        (variable_declarator
+          (identifier)
+          (lambda_expression
+            (lambda_parameter
+              (identifier))
+            (block
+              (return_statement
+                (identifier)))))))))
